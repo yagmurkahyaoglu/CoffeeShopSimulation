@@ -64,20 +64,20 @@ int main(int argc, char* argv[]) {
     cout << "number of orders: " << M << endl;
 
 
-    vector<Cashier *> cashVec(N);
+    vector<Cashier *> cashVec(N); //holds the cashiers in model1
     for (int i = 0; i < N; i++) { cashVec[i] = new Cashier(); }
-    vector<Barista *> barVec(N / 3);
+    vector<Barista *> barVec(N / 3); //holds the baristas in model 1
     for (int i = 0; i < N / 3; i++) { barVec[i] = new Barista(); }
-    vector<Cashier *> cashVec2(N);
+    vector<Cashier *> cashVec2(N); //holds the cashiers in model 2
     for (int i = 0; i < N; i++) { cashVec2[i] = new Cashier(); }
-    vector<Barista *> barVec2(N / 3);
+    vector<Barista *> barVec2(N / 3); //holds the baristas in model 2
     for (int i = 0; i < N / 3; i++) { barVec2[i] = new Barista(); }
-    priority_queue<Customer, vector<Customer*>, function<bool(Customer*, Customer*)>> CashQ(CompareTime);
-    priority_queue<Customer, vector<Customer*>, function<bool(Customer*, Customer*)>> BarQ(ComparePrice);
-    priority_queue<Customer*, vector<Customer*>, function<bool(Customer*, Customer*)>> timeline(CompareOut);
-    vector<Customer *> Cust(M);
-    vector<Customer *> Cust2(M);
-    for (int i = 0; i < M; i++) {
+    priority_queue<Customer, vector<Customer*>, function<bool(Customer*, Customer*)>> CashQ(CompareTime); //cashier queue
+    priority_queue<Customer, vector<Customer*>, function<bool(Customer*, Customer*)>> BarQ(ComparePrice); //barista queue
+    priority_queue<Customer*, vector<Customer*>, function<bool(Customer*, Customer*)>> timeline(CompareOut); //acts as a timeline
+    vector<Customer *> Cust(M); //holds customers in model 1
+    vector<Customer *> Cust2(M); //holds customers in model 2
+    for (int i = 0; i < M; i++) { // reads input from file and fills the customer vectors
         getline(infile, line);
         vector<string> words;
         split1(line, words);
@@ -86,16 +86,16 @@ int main(int argc, char* argv[]) {
 
         timeline.push(Cust[i]);
     }
-    int cashMax = 0;
-    int barMax = 0;
+    int cashMax = 0; //max value of cashier size
+    int barMax = 0; //max value of barista size
 
     Customer *curr = timeline.top();
     while (!timeline.empty()){
         curr = timeline.top();
         timeline.pop();
-        if (curr->where == 0){
+        if (curr->where == 0){ //if the  customer has only came to the store
             bool x = true;
-            for(int k=0; k<cashVec.size(); k++){
+            for(int k=0; k<cashVec.size(); k++){ //if there is an empty cashier the customer goes there
                 if(cashVec[k]->empty){
                     curr->where = 1;
                     cashVec[k]->empty = false;
@@ -108,12 +108,12 @@ int main(int argc, char* argv[]) {
                     break;
                 }
             }
-            if(x){
+            if(x){ //else goes to the cashier queue
                 CashQ.push(curr);
                 cashMax = fmax(cashMax, CashQ.size());
 
             }
-        } else if (curr->where == 1){
+        } else if (curr->where == 1){ //if costumer has made an order
             int index = curr->cash;
             if (!CashQ.empty()){
                 Customer *next = CashQ.top();
