@@ -260,6 +260,7 @@ int main(int argc, char* argv[]) {
 
     }
     double total2 = curr2->total - Cust2[0]->arrival;
+    printf("\n");
     printf("%.2lf \n", total2);
     printf("%d \n", cashMax2);
     for(int y=0; y<N/3; y++) {
